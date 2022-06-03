@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>20220603kochi</title>
+  <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+</head>
+<body>
+  
+
+<h2>切り替えタブ（パターン1）</h2>
+
+<div id="switchTab">
+  <ul class="tab-list">
+    <li @click="clickTab1" :class="tab1">タブ1</li>
+    <li @click="clickTab2" :class="tab2">タブ2</li>
+    <li @click="clickTab3" :class="tab3">タブ3</li>
+  </ul>
+  <div v-show="content1">コンテンツ1</div>
+  <div v-show="content2">コンテンツ2</div>
+  <div v-show="content3">コンテンツ3</div>
+</div>
+
+<script>
+  const switchTab = new Vue({
+    el: '#switchTab',
+    data() {
+      return {
+        content1: true,
+        content2: false,
+        content3: false,
+        tab1: 'active',
+        tab2: null,
+        tab3: null,
+      }
+    },
+    methods: {
+      clickTab1() {
+        this.content1 = true;
+        this.content2 = false;
+        this.content3 = false;
+        this.tab1 = 'active';
+        this.tab2 = null;
+        this.tab3 = null;
+      },
+      clickTab2() {
+        this.content1 = false;
+        this.content2 = true;
+        this.content3 = false;
+        this.tab1 = null;
+        this.tab2 = 'active';
+        this.tab3 = null;
+      },
+      clickTab3() {
+        this.content1 = false;
+        this.content2 = false;
+        this.content3 = true;
+        this.tab1 = null;
+        this.tab2 = null;
+        this.tab3 = 'active';
+      }
+    }
+  })
+</script>
+
+<style>
+.tab-list {
+  display: flex;
+  list-style: none;
+  padding: 0;
+}
+.tab-list li {
+  width: 100px;
+  border: 1px solid gainsboro;
+  text-align: center;
+  padding: 2px;
+  cursor: pointer;
+}
+.active {
+  background-color: black;
+  color: white;
+}
+</style>
+<br><br>
+////////////////////////////////////////////////////////////////////////////////
+
+
+<h2>切り替えタブ（パターン2）</h2>
+
+<div id="switchTab2">
+  <ul class="tab-list">
+    <li @click="clickTab1" :class="tab1">タブ1</li>
+    <li @click="clickTab2" :class="tab2">タブ2</li>
+    <li @click="clickTab3" :class="tab3">タブ3</li>
+  </ul>
+  <div :class="tab1" class="content">コンテンツ1</div>
+  <div :class="tab2" class="content">コンテンツ2</div>
+  <div :class="tab3" class="content">コンテンツ3</div>
+</div>
+
+<script>
+  const switchTab2 = new Vue({
+    el: '#switchTab2',
+    data() {
+      return {
+        tab1: 'active',
+        tab2: null,
+        tab3: null,
+      }
+    },
+    methods: {
+      clickTab1() {
+        this.tab1 = 'active';
+        this.tab2 = null;
+        this.tab3 = null;
+      },
+      clickTab2() {
+        this.tab1 = null;
+        this.tab2 = 'active';
+        this.tab3 = null;
+      },
+      clickTab3() {
+        this.tab1 = null;
+        this.tab2 = null;
+        this.tab3 = 'active';
+      }
+    }
+  })
+</script>
+
+<style>
+  .tab-list {
+    display: flex;
+    list-style: none;
+    padding: 0;
+  }
+  .tab-list li {
+    width: 100px;
+    border: 1px solid gainsboro;
+    text-align: center;
+    padding: 2px;
+    cursor: pointer;
+  }
+  .content {
+    display: none;
+  }
+  .active {
+    background-color: black;
+    color: white;
+  }
+  .content.active {
+    display: block;
+    background-color: transparent;
+    color: black;
+  }
+</style>
+<br><br>
+
+////////////////////////////////////////////////////////////////////////////////
+
+
+<h2>モーダルウィンドウ（パターン1）</h2>
+
+<div id="modal">
+  <button @click="toggleModal">開く</button>
+  <div v-show="modalBoolean" @click.self="toggleModal" class="modal-back">
+    <div class="modal-content">
+      <h3>モーダルウィンドウ</h3>
+      <button @click="toggleModal">閉じる</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const modal = new Vue({
+    el: '#modal',
+    data() {
+      return {
+        modalBoolean: false
+      }
+    },
+    methods: {
+      toggleModal() {
+        this.modalBoolean = !this.modalBoolean
+      }
+    }
+  })
+</script>
+
+<style>
+  .modal-back {
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+  }
+  .modal-content {
+    width: 20vw;
+    background: white;
+    text-align: center;
+    padding: 5vh;
+  }
+</style>
+<br><br>
+
+////////////////////////////////////////////////////////////////////////////////
+
+<h2>モーダルウィンドウ（パターン2）</h2>
+
+<div id="modal2">
+  <button @click="openModal">開く（コンポーネント使用）</button>
+  <open-modal v-show="modalBoolean2" @close-child="closeModal"></open-modal>
+</div>
+<script>
+  Vue.component('open-modal',{
+    template:`
+      <div class="modal-back2" @click.self="closeChild">
+        <div class="modal-content2">
+          <h3>コンポーネント<br>モーダルウィンドウ</h3>
+          <button @click="closeChild">閉じる</button>
+        </div>
+      </div>
+    `,
+    methods: {
+      closeChild() {
+        this.$emit('close-child')
+      }
+    }
+    })
+  new Vue({
+    el:'#modal2',
+    data() {
+      return {
+        modalBoolean2: false,
+      }
+    },
+    methods: {
+      openModal() {
+        this.modalBoolean2 = true;
+      },
+      closeModal() {
+        this.modalBoolean2 = false;
+      }
+    }
+  })
+</script>
+
+<style>
+  .modal-back2 {
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+  }
+
+  .modal-content2 {
+    width: 20vw;
+    background: white;
+    text-align: center;
+    padding: 5vh;
+  }
+</style>
+<br><br>
+
+
+////////////////////////////////////////////////////////////////////////////////
+
+
+<h2>リアルタイム検索</h2>
+
+<div id="rtSearch">
+  <input type="text" v-model="input" placeholder="ここに苗字を入力">
+  <p v-for="person in people" v-show="person.includes(input)">{{person}}</p>
+</div>
+
+<script>
+  new Vue({
+    el: '#rtSearch',
+    data() {
+      return {
+        input: '',
+        people: [
+          '佐藤', '田中', '鈴木', '山田', '藤原', '佐川', '原田', '鈴川', '藤木', '中田',
+        ],
+      }
+    }
+  })
+</script>
+
+
+
+
+
+
+
+
+
+<style>
+  h2 {
+    color: rgb(61, 61, 61);
+  }
+  p {
+    margin: 0;
+  }
+</style>
+</body>
+</html>
